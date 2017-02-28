@@ -1,0 +1,27 @@
+html, body {
+	font-family: arial;
+}
+#pgd_canvas {
+	float: left;
+	margin-right: 5px;
+	border: 1px gray solid;
+}
+#control_panel {
+	float: left;
+}
+#num_sides_div {
+	padding: 5px;
+	border: 1px gray solid;
+}
+.num_input {
+	text-align: center;
+	width: 30px;
+}
+.input_div {
+	padding: 5px;
+	border: 1px gray solid;
+}
+#side_length_div {
+	padding: 5px;
+	border: 1px gray solid;
+}

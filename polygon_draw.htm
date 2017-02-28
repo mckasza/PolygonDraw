@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+	<head>
+		<link rel="stylesheet" href="style.css">
+		<script type="text/javascript" src="polygon.js"></script>
+		<script type="text/javascript" src="input_handlers.js"></script>
+		<script>
+			var pgdCanvas;
+			var ctx;
+			var polygon;
+			
+			function init(){
+				var numSides = 5;
+				var sideLength = 100;
+				var xCoord = 0;
+				var yCoord = 0;
+				
+				polygon = new Polygon(numSides, sideLength, xCoord, yCoord);
+				
+				var numSidesInput = document.getElementById("num_sides_input");
+				numSidesInput.value = numSides;
+				
+				var sideLengthInput = document.getElementById("side_length_input");
+				sideLengthInput.value = sideLength;
+				
+				var xCoordInput = document.getElementById("x_coord_input");
+				xCoordInput.value = xCoord;
+				
+				var yCoordInput = document.getElementById("y_coord_input");
+				yCoordInput.value = yCoord;
+				
+				pgdCanvas = document.getElementById("pgd_canvas");
+				ctx = pgd_canvas.getContext("2d");
+				
+				draw();
+			}
+			function draw(){
+				ctx.clearRect(0, 0, pgdCanvas.width, pgdCanvas.height);
+				
+				var numSides = polygon.getNumSides();
+				var apothem = polygon.getApothem();
+				var angle_inc = (Math.PI*2)/numSides;
+				
+				for(var angle = Math.PI/2;angle<(Math.PI*2)+(Math.PI/2);angle+=angle_inc){
+					// The center x,y coordinates of the side that will drawn
+					var c_x = (pgdCanvas.width/2) + polygon.getXCoord()+apothem*Math.cos(angle);
+					var c_y = (pgdCanvas.height/2) + polygon.getYCoord()+apothem*Math.sin(angle);
+					
+					// Draw apothems if the "Draw Apothems" check box is checked
+					if(document.getElementById("draw_apothems").checked){
+						ctx.beginPath();
+						ctx.moveTo((pgdCanvas.width/2) + polygon.getXCoord(),(pgdCanvas.height/2) + polygon.getYCoord());
+						ctx.lineTo(c_x, c_y);
+						ctx.stroke();
+					}
+					
+					// Draw half of a side
+					ctx.beginPath();
+					ctx.moveTo(c_x-(polygon.getSideLength()/2)*Math.cos(angle-(Math.PI/2)),
+								c_y-(polygon.getSideLength()/2)*Math.sin(angle-(Math.PI/2)));
+					ctx.lineTo(c_x, c_y);
+					ctx.stroke();
+					
+					// Draw the other half of a side
+					ctx.beginPath();
+					ctx.moveTo(c_x-(polygon.getSideLength()/2)*Math.cos(angle+(Math.PI/2)),
+								c_y-(polygon.getSideLength()/2)*Math.sin(angle+(Math.PI/2)));
+					ctx.lineTo(c_x, c_y);
+					ctx.stroke();
+				}
+				
+				ctx.font = "12px Arial";
+				ctx.fillText("Apothem Length: " + apothem.toFixed(2),10, 550);
+				ctx.fillText("Perimeter Length: " + polygon.getPerimeter().toFixed(2), 10, 565);
+				ctx.fillText("Perimeter/2*apothem: " + (polygon.getPerimeter()/(2*apothem)).toFixed(5), 10, 580);
+			}
+	</script>
+	</head>
+	
+	<body onload="init()">
+		<canvas id="pgd_canvas" width="600" height="600"></canvas>
+		<div id="control_panel">
+			Number of sides<br>
+			<div id="num_sides_div" class="input_div">
+				<input id="num_sides_decrement" type="button" value="-" onclick="onSidesDecrement()"></input>
+				<input id="num_sides_input" type="text" class="num_input" onchange="onSidesInputChanged()"></input>
+				<input id="num_sides_increment" type="button" value="+" onclick="onSidesIncrement()"></input>
+			</div>
+			Side Length<br>
+			<div id="side_length_div" class="input_div">
+				<input id="side_length_decrement" type="button" value="-" onclick="onLengthDecrement()"></input>
+				<input id="side_length_input" type="text" class="num_input" onchange="onLengthInputChanged()"></input>
+				<input id="side_length_increment" type="button" value="+" onclick="onLengthIncrement()"></input>
+			</div>
+			X Coordinate<br>
+			<div id="x_coord_div" class="input_div">
+				<input id="x_coord_decrement" type="button" value="-" onclick="onXDecrement()"></input>
+				<input id="x_coord_input" type="text" class="num_input" onchange="onXCoordInputChanged()"></input>
+				<input id="x_coord_increment" type="button" value="+" onclick="onXIncrement()"></input>
+			</div>
+			Y Coordinate<br>
+			<div id="y_coord_div" class="input_div">
+				<input id="y_coord_decrement" type="button" value="-" onclick="onYDecrement()"></input>
+				<input id="y_coord_input" type="text" class="num_input" onchange="onYCoordInputChanged()"></input>
+				<input id="y_coord_increment" type="button" value="+" onclick="onYIncrement()"></input>
+			</div>
+			<input id="draw_apothems" type="checkbox" checked="true" onclick="draw()">Draw Apothems</input>
+		</div>
+	</body>
+
+</html>
